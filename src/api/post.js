@@ -1,54 +1,54 @@
 import apiUrl from '../apiConfig'
 import axios from 'axios'
 
-export const createPost = (data, user) => {
+export const createPost = (props, post) => {
   return axios({
     method: 'POST',
     url: apiUrl + '/posts',
     headers: {
-      Authorization: `Token token=${user.token}`
+      Authorization: `Token token=${props.user.token}`
     },
-    data
+    data: { post: post }
   })
 }
 
-export const updatePost = (id, data, user) => {
+export const updatePost = (props, post) => {
   return axios({
     method: 'PATCH',
-    url: apiUrl + '/posts/' + id,
+    url: apiUrl + '/posts/' + props.match.params.id,
     headers: {
-      Authorization: `Token token=${user.token}`
+      Authorization: `Token token=${props.user.token}`
     },
-    data
+    data: { post: post }
   })
 }
 
-export const destroyPost = (id, user) => {
+export const destroyPost = props => {
   return axios({
     method: 'DELETE',
-    url: apiUrl + '/posts/' + id,
+    url: apiUrl + '/posts/' + props.match.params.id,
     headers: {
-      Authorization: `Token token=${user.token}`
+      Authorization: `Token token=${props.user.token}`
     }
   })
 }
 
-export const indexPost = user => {
+export const indexPost = props => {
   return axios({
     method: 'GET',
     url: apiUrl + '/posts',
     headers: {
-      Authorization: `Token token=${user.token}`
+      Authorization: `Token token=${props.user.token}`
     }
   })
 }
 
-export const showPost = (id, user) => {
+export const showPost = props => {
   return axios({
     method: 'GET',
-    url: apiUrl + '/posts/' + id,
+    url: apiUrl + '/posts/' + props.match.params.id,
     headers: {
-      Authorization: `Token token=${user.token}`
+      Authorization: `Token token=${props.user.token}`
     }
   })
 }

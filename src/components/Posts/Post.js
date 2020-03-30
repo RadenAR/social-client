@@ -1,34 +1,47 @@
 import React, { useState, useEffect } from 'react'
-// import { Link } from 'react-router-dom'
-// import axios from 'axios'
+import { Link, Redirect } from 'react-router-dom'
+import moment from 'moment'
 
-// import apiUrl from '../../apiConfig'
-import { indexPost } from '../../api/post'
+import { showPost, destroyPost } from '../../api/post'
 
-const Posts = props => {
-  const [posts, setPosts] = useState([])
+const Post = props => {
+  const [post, setPost] = useState(null)
+  const [deleted, setDeleted] = useState(false)
 
   useEffect(() => {
-    indexPost(props.user)
-      .then(res => setPosts(res.data.posts))
+    showPost(props)
+      .then(res => setPost(res.data.post))
       .catch(console.error)
   }, [])
 
-  const postList = posts.map(post => (
-    <li key={post.id}>
-      <h5>{post.title}</h5>
-      <p>{post.text}</p>
-    </li>
-  ))
+  const destroy = () => {
+    destroyPost(props)
+      .then(() => setDeleted(true))
+      .catch(console.error)
+  }
+
+  if (!post) {
+    return <p>Loading...</p>
+  }
+
+  if (deleted) {
+    return <Redirect to={
+      { pathname: '/posts', state: { msg: 'Post succesfully deleted!' } }
+    } />
+  }
 
   return (
     <React.Fragment>
-      <h4>Posts</h4>
-      <ul>
-        {postList}
-      </ul>
+      <h4>{post.title}</h4>
+      <p>{post.text}</p>
+      <p>posted: {moment(post.createdAt, 'YYYYMMDD').fromNow()}</p>
+      <button onClick={destroy}>Delete</button>
+      <Link to={`/posts/${props.match.params.id}/edit`}>
+        <button>Edit</button>
+      </Link>
+      <Link to='/posts'>Back to all posts</Link>
     </React.Fragment>
   )
 }
 
-export default Posts
+export default Post

@@ -8,7 +8,10 @@ import SignUp from '../SignUp/SignUp'
 import SignIn from '../SignIn/SignIn'
 import SignOut from '../SignOut/SignOut'
 import ChangePassword from '../ChangePassword/ChangePassword'
-import Posts from '../Posts/Post'
+import Posts from '../Posts/Posts'
+import Post from '../Posts/Post'
+import PostCreate from '../Posts/PostCreate'
+import PostEdit from '../Posts/PostEdit'
 
 class App extends Component {
   constructor () {
@@ -55,8 +58,17 @@ class App extends Component {
           <AuthenticatedRoute user={user} path='/change-password' render={() => (
             <ChangePassword msgAlert={this.msgAlert} user={user} />
           )} />
-          <AuthenticatedRoute user={user} path='/posts' render={() => (
+          <AuthenticatedRoute user={user} exact path='/posts' render={() => (
             <Posts msgAlert={this.msgAlert} user={user} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/posts/:id' render={({ match }) => (
+            <Post msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/new' render={() => (
+            <PostCreate msgAlert={this.msgAlert} user={user} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/posts/:id/edit' render={({ match }) => (
+            <PostEdit msgAlert={this.msgAlert} user={user} match={match} />
           )} />
         </main>
       </Fragment>
