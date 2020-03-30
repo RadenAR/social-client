@@ -31,16 +31,16 @@ const Post = props => {
   }
 
   return (
-    <React.Fragment>
+    <div>
       <h4>{post.title}</h4>
       <p>{post.text}</p>
       <p>posted: {moment(post.createdAt, 'YYYYMMDD').fromNow()}</p>
-      <button onClick={destroy}>Delete</button>
+      <button className='btn btn-danger' onClick={destroy}>Delete</button>
       <Link to={`/posts/${props.match.params.id}/edit`}>
-        <button>Edit</button>
+        <button className='btn btn-primary'>Edit</button>
       </Link>
       <Link to='/posts'>Back to all posts</Link>
-    </React.Fragment>
+    </div>
   )
 }
 
