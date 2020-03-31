@@ -1,25 +1,25 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
 
-import { showPost, updatePost } from '../../api/post'
-import PostForm from '../shared/PostForm'
+import { showComment, updateComment } from '../../api/comment'
+import CommentForm from '../shared/CommentForm'
 
-const PostEdit = props => {
-  const [post, setPost] = useState({ title: '', text: '' })
+const CommentEdit = props => {
+  const [comment, setComment] = useState({ title: '', text: '' })
   const [updated, setUpdated] = useState(null)
 
   useEffect(() => {
-    showPost(props)
-      .then(res => setPost(res.data.post))
+    showComment(props)
+      .then(res => setComment(res.data.comment))
       .then(() => props.msgAlert({
         heading: 'Retrieval Successful',
-        message: 'Successfully retrieved a post',
+        message: 'Successfully retrieved a comment',
         variant: 'success'
       }))
       .catch(error => {
         props.msgAlert({
-          heading: 'Retrieving post Failed with error: ' + error.message,
-          message: 'Retrieving post failed',
+          heading: 'Retrieving comment Failed with error: ' + error.message,
+          message: 'Retrieving comment failed',
           variant: 'danger'
         })
       })
@@ -27,24 +27,24 @@ const PostEdit = props => {
 
   const handleChange = event => {
     const updatedField = { [event.target.name]: event.target.value }
-    const editedPost = Object.assign({ ...post }, updatedField)
-    setPost(editedPost)
+    const editedComment = Object.assign({ ...comment }, updatedField)
+    setComment(editedComment)
   }
 
   const handleSubmit = event => {
     event.preventDefault()
 
-    updatePost(props, post)
+    updateComment(props, comment)
       .then(() => setUpdated(true))
       .then(() => props.msgAlert({
         heading: 'Edit Successful',
-        message: 'Successfully edited a post',
+        message: 'Successfully edited a comment',
         variant: 'success'
       }))
       .catch(error => {
         props.msgAlert({
-          heading: 'Editing post Failed with error: ' + error.message,
-          message: 'Editing post failed',
+          heading: 'Editing comment Failed with error: ' + error.message,
+          message: 'Editing comment failed',
           variant: 'danger'
         })
       })
@@ -56,8 +56,8 @@ const PostEdit = props => {
 
   return (
     <Fragment>
-      <PostForm
-        post={post}
+      <CommentForm
+        comment={comment}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         cancelPath={`/posts/${props.match.params.id}`}
@@ -66,4 +66,4 @@ const PostEdit = props => {
   )
 }
 
-export default PostEdit
+export default CommentEdit

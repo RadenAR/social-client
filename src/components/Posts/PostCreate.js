@@ -19,7 +19,18 @@ const PostCreate = props => {
 
     createPost(props, post)
       .then(res => setCreatedPostId(res.data.post._id))
-      .catch(console.error)
+      .then(() => props.msgAlert({
+        heading: 'Create Successful',
+        message: 'Successfully created a post',
+        variant: 'success'
+      }))
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Creating post Failed with error: ' + error.message,
+          message: 'Creating post failed',
+          variant: 'danger'
+        })
+      })
   }
 
   if (createdPostId) {

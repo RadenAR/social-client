@@ -12,6 +12,8 @@ import Posts from '../Posts/Posts'
 import Post from '../Posts/Post'
 import PostCreate from '../Posts/PostCreate'
 import PostEdit from '../Posts/PostEdit'
+import CommentCreate from '../Posts/CommentCreate'
+import CommentEdit from '../Posts/CommentEdit'
 
 class App extends Component {
   constructor () {
@@ -69,6 +71,12 @@ class App extends Component {
           )} />
           <AuthenticatedRoute user={user} exact path='/posts/:id/edit' render={({ match }) => (
             <PostEdit msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/posts/:id/comment' render={({ match }) => (
+            <CommentCreate msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/posts/:id/:num/edit' render={({ match }) => (
+            <CommentEdit msgAlert={this.msgAlert} user={user} match={match} />
           )} />
         </main>
       </Fragment>

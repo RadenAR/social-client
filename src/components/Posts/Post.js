@@ -4,29 +4,73 @@ import moment from 'moment'
 
 import { showPost, destroyPost } from '../../api/post'
 import { likeCount, didLike, like, unlike } from '../../api/like'
+import { indexComments, deleteComment } from '../../api/comment'
 
 const Post = props => {
   const [post, setPost] = useState(null)
   const [deleted, setDeleted] = useState(false)
   const [likeNum, setLikeNum] = useState(null)
   const [liked, setLiked] = useState(false)
+  const [comments, setComments] = useState([])
 
+  // Comment axios calls
+  useEffect(() => {
+    indexComments(props)
+      .then(res => setComments(res.data.comments))
+      .then(() => props.msgAlert({
+        heading: 'Comments available',
+        message: 'Successfully retrieved comments',
+        variant: 'success'
+      }))
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Retrieving Comments Failed with error: ' + error.message,
+          message: 'Retrieving comments failed',
+          variant: 'danger'
+        })
+      })
+  }, [])
+
+  // Post axios calls
   useEffect(() => {
     showPost(props)
       .then(res => setPost(res.data.post))
-      .catch(console.error)
+      .then(() => props.msgAlert({
+        heading: 'Post available',
+        message: 'Successfully retrieved Post',
+        variant: 'success'
+      }))
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Getting Post Failed with error: ' + error.message,
+          message: 'Getting a post failed',
+          variant: 'danger'
+        })
+      })
   }, [])
 
   useEffect(() => {
     likeCount(props, props.match.params.id)
       .then(res => setLikeNum(res.data.likeCount))
-      .catch(console.error)
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Getting Like Count Failed with error: ' + error.message,
+          message: 'Getting like count failed',
+          variant: 'danger'
+        })
+      })
   }, [])
 
   useEffect(() => {
     didLike(props, props.match.params.id)
       .then(res => setLiked(res.data.liked))
-      .then(() => console.log('got liked status', liked))
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Checking if Liked Failed with error: ' + error.message,
+          message: 'Checking if liked failed',
+          variant: 'danger'
+        })
+      })
   }, [])
 
   const changeLike = () => {
@@ -34,19 +78,40 @@ const Post = props => {
       unlike(props, props.match.params.id)
         .then(() => setLiked(false))
         .then(() => {
-          console.log('Created')
           didLike(props, props.match.params.id)
             .then(res => setLiked(res.data.liked))
             .then(() => {
               likeCount(props, props.match.params.id)
                 .then(res => setLikeNum(res.data.likeCount))
-                .catch(console.error)
+                .catch(error => {
+                  props.msgAlert({
+                    heading: 'Getting Like Count Failed with error: ' + error.message,
+                    message: 'Getting like count failed',
+                    variant: 'danger'
+                  })
+                })
             })
-            .catch(console.error)
+            .catch(error => {
+              props.msgAlert({
+                heading: 'Checking if Liked Failed with error: ' + error.message,
+                message: 'Checking if liked failed',
+                variant: 'danger'
+              })
+            })
         })
-        .catch(console.error)
+        .then(() => props.msgAlert({
+          heading: 'Unlike successful',
+          message: 'You unliked the Post',
+          variant: 'success'
+        }))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Unliking Failed with error: ' + error.message,
+            message: 'Unliking failed',
+            variant: 'danger'
+          })
+        })
     } else {
-      console.log(props, props.match.params.id, 'we hit the else')
       like(props, props.match.params.id)
         .then(() => {
           setLiked(true)
@@ -55,18 +120,49 @@ const Post = props => {
             .then(() => {
               likeCount(props, props.match.params.id)
                 .then(res => setLikeNum(res.data.likeCount))
-                .catch(console.error)
+                .catch(error => {
+                  props.msgAlert({
+                    heading: 'Getting Like Count Failed with error: ' + error.message,
+                    message: 'Getting like count failed',
+                    variant: 'danger'
+                  })
+                })
             })
-            .catch(console.error)
+            .catch(error => {
+              props.msgAlert({
+                heading: 'Checking if Liked Failed with error: ' + error.message,
+                message: 'Checking if liked failed',
+                variant: 'danger'
+              })
+            })
         })
-        .catch(console.error)
+        .then(() => props.msgAlert({
+          heading: 'Like successful',
+          message: 'You liked the Post',
+          variant: 'success'
+        }))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Liking Failed with error: ' + error.message,
+            message: 'Liking failed',
+            variant: 'danger'
+          })
+        })
     }
   }
 
-  const destroy = () => {
+  const destroy = event => {
+    event.preventDefault()
+
     destroyPost(props)
       .then(() => setDeleted(true))
-      .catch(console.error)
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Deleting post Failed with error: ' + error.message,
+          message: 'Deleting post failed',
+          variant: 'danger'
+        })
+      })
   }
 
   if (!post) {
@@ -79,17 +175,66 @@ const Post = props => {
     } />
   }
 
+  const onDeleteComment = event => {
+    event.preventDefault()
+
+    deleteComment(props, event.target.value)
+      .then(() => {
+        indexComments(props)
+          .then(res => setComments(res.data.comments))
+          .catch(error => {
+            props.msgAlert({
+              heading: 'Retrieving Comments Failed with error: ' + error.message,
+              message: 'Retrieving comments failed',
+              variant: 'danger'
+            })
+          })
+      })
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Deleting comment Failed with error: ' + error.message,
+          message: 'Deleting comment failed',
+          variant: 'danger'
+        })
+      })
+  }
+
+  let commentList
+
+  if (comments.length > 0) {
+    commentList = comments.map(comment => (
+      <li key={comment._id}>
+        <h5>{comment.title}</h5>
+        <p>{comment.text}</p>
+        {comment.owner === props.user._id ? (<button className='btn btn-danger' onClick={onDeleteComment} value={comment._id}>Delete Comment</button>) : ''}
+        {comment.owner === props.user._id ? (
+          <Link to={`/posts/${props.match.params.id}/${comment._id}/edit`}>
+            <button className='btn btn-primary'>Edit</button>
+          </Link>) : ''}
+      </li>
+    ))
+  }
+
   return (
     <div>
       <h4>{post.title}</h4>
       <p>{post.text}</p>
       <p>posted: {moment(post.createdAt, 'YYYYMMDD').fromNow()}</p>
-      <button className='btn btn-secondary' onClick={changeLike}>{liked ? 'Unlike' : 'Like'} {likeNum}</button>
-      <button className='btn btn-danger' onClick={destroy}>Delete</button>
-      <Link to={`/posts/${props.match.params.id}/edit`}>
-        <button className='btn btn-primary'>Edit</button>
+      <button className='btn btn-secondary' onClick={changeLike}>{liked ? 'Unlike' : 'Like'} {likeNum === 0 ? '' : likeNum}</button>
+      {post.owner === props.user._id ? (<button className='btn btn-danger' onClick={destroy}>Delete</button>) : ''}
+      {post.owner === props.user._id ? (
+        <Link to={`/posts/${props.match.params.id}/edit`}>
+          <button className='btn btn-primary'>Edit</button>
+        </Link>) : ''}
+      <Link to={`/posts/${props.match.params.id}/comment`}>
+        <button className='btn btn-primary'>Comment</button>
       </Link>
       <Link to='/posts'>Back to all posts</Link>
+      <div>
+        <ul>
+          {commentList}
+        </ul>
+      </div>
     </div>
   )
 }

@@ -9,7 +9,18 @@ const Posts = props => {
   useEffect(() => {
     indexPost(props)
       .then(res => setPosts(res.data.posts))
-      .catch(console.error)
+      .then(() => props.msgAlert({
+        heading: 'Posts available',
+        message: 'Successfully retrieved Posts',
+        variant: 'success'
+      }))
+      .catch(error => {
+        props.msgAlert({
+          heading: 'Retrieving posts Failed with error: ' + error.message,
+          message: 'Retrieving posts failed',
+          variant: 'danger'
+        })
+      })
   }, [])
 
   const postList = posts.map(post => (

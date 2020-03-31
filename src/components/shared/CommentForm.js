@@ -1,23 +1,23 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const PostForm = ({ post, handleSubmit, handleChange, cancelPath }) => (
+const CommentForm = ({ comment, handleSubmit, handleChange, cancelPath }) => (
   <div className='row'>
     <div className='col-sm-10 col-md-8 mx-auto mt-5'>
       <form onSubmit={handleSubmit}>
         <div className='form-group'>
           <label>Title</label>
           <input
-            placeholder='A Note From The Heart'
-            value={post.title || ''}
+            placeholder='A title for your comment'
+            value={comment.title || ''}
             name='title'
             onChange={handleChange}
             className='form-control'
           />
           <label>Text</label>
           <input
-            placeholder='Blah Blah Blah'
-            value={post.text || ''}
+            placeholder='The real meat and potatoes'
+            value={comment.text || ''}
             name='text'
             onChange={handleChange}
             className='form-control'
@@ -32,4 +32,4 @@ const PostForm = ({ post, handleSubmit, handleChange, cancelPath }) => (
   </div>
 )
 
-export default PostForm
+export default CommentForm
