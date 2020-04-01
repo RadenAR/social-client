@@ -52,3 +52,23 @@ export const showPost = props => {
     }
   })
 }
+
+export const indexFriendsPost = props => {
+  return axios({
+    method: 'GET',
+    url: apiUrl + '/friends/posts',
+    headers: {
+      Authorization: `Token token=${props.user.token}`
+    }
+  })
+}
+
+export const indexMyPost = props => {
+  return axios({
+    method: 'GET',
+    url: apiUrl + '/myPosts',
+    headers: {
+      Authorization: `Token token=${props.user.token}`
+    }
+  })
+}

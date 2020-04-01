@@ -14,6 +14,10 @@ import PostCreate from '../Posts/PostCreate'
 import PostEdit from '../Posts/PostEdit'
 import CommentCreate from '../Posts/CommentCreate'
 import CommentEdit from '../Posts/CommentEdit'
+import Profile from '../Profile/Profile'
+import AddFriend from '../Profile/AddFriend'
+import FriendPosts from '../Posts/FriendPosts'
+import MyPosts from '../Posts/MyPosts'
 
 class App extends Component {
   constructor () {
@@ -77,6 +81,18 @@ class App extends Component {
           )} />
           <AuthenticatedRoute user={user} exact path='/posts/:id/:num/edit' render={({ match }) => (
             <CommentEdit msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/profile' render={({ match }) => (
+            <Profile msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/addFriend' render={({ match }) => (
+            <AddFriend msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/friendPosts' render={({ match }) => (
+            <FriendPosts msgAlert={this.msgAlert} user={user} match={match} />
+          )} />
+          <AuthenticatedRoute user={user} exact path='/myPosts' render={({ match }) => (
+            <MyPosts msgAlert={this.msgAlert} user={user} match={match} />
           )} />
         </main>
       </Fragment>

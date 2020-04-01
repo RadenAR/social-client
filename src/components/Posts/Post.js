@@ -265,6 +265,11 @@ const Post = props => {
         socket.emit('deleted post', 'a post was deleted')
         return res
       })
+      .then(() => props.msgAlert({
+        heading: 'Delete Successful',
+        message: 'You deleted the Post',
+        variant: 'success'
+      }))
       .then(() => setDeleted(true))
       .catch(error => {
         props.msgAlert({
@@ -333,7 +338,7 @@ const Post = props => {
     <div>
       <h4>{post.title}</h4>
       <p>{post.text}</p>
-      <p>posted: {moment(post.createdAt, 'YYYYMMDD').fromNow()}</p>
+      <p>posted: {moment(post.createdAt).fromNow()}</p>
       <button className='btn btn-secondary' onClick={changeLike}>{liked ? 'Unlike' : 'Like'} {likeNum === 0 ? '' : likeNum}</button>
       {post.owner === props.user._id ? (<button className='btn btn-danger' onClick={destroy}>Delete</button>) : ''}
       {post.owner === props.user._id ? (
