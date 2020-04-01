@@ -1,5 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
+import useSocket from 'use-socket.io-client'
+
+import apiUrl from '../../apiConfig'
 
 import { showPost, updatePost } from '../../api/post'
 import PostForm from '../shared/PostForm'
@@ -7,6 +10,9 @@ import PostForm from '../shared/PostForm'
 const PostEdit = props => {
   const [post, setPost] = useState({ title: '', text: '' })
   const [updated, setUpdated] = useState(null)
+
+  const [socket] = useSocket(apiUrl)
+  socket.connect()
 
   useEffect(() => {
     showPost(props)
@@ -35,6 +41,10 @@ const PostEdit = props => {
     event.preventDefault()
 
     updatePost(props, post)
+      .then(res => {
+        socket.emit('edited post', 'a post was edited')
+        return res
+      })
       .then(() => setUpdated(true))
       .then(() => props.msgAlert({
         heading: 'Edit Successful',

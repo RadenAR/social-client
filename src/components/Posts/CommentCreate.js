@@ -1,5 +1,8 @@
 import React, { useState, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
+import useSocket from 'use-socket.io-client'
+
+import apiUrl from '../../apiConfig'
 
 import { createComment } from '../../api/comment'
 import CommentForm from '../shared/CommentForm'
@@ -7,6 +10,8 @@ import CommentForm from '../shared/CommentForm'
 const CommentCreate = props => {
   const [comment, setComment] = useState({ title: '', text: '' })
   const [createdComment, setCreatedComment] = useState(false)
+
+  const [socket] = useSocket(apiUrl)
 
   const handleChange = event => {
     const updatedField = { [event.target.name]: event.target.value }
@@ -18,6 +23,10 @@ const CommentCreate = props => {
     event.preventDefault()
 
     createComment(props, comment)
+      .then(res => {
+        socket.emit('new comment', 'a new post was sent')
+        return res
+      })
       .then(() => setCreatedComment(true))
       .catch(error => {
         props.msgAlert({

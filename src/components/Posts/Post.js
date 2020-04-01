@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import moment from 'moment'
+import useSocket from 'use-socket.io-client'
+
+import apiUrl from '../../apiConfig'
 
 import { showPost, destroyPost } from '../../api/post'
 import { likeCount, didLike, like, unlike } from '../../api/like'
@@ -12,6 +15,9 @@ const Post = props => {
   const [likeNum, setLikeNum] = useState(null)
   const [liked, setLiked] = useState(false)
   const [comments, setComments] = useState([])
+
+  const [socket] = useSocket(apiUrl)
+  socket.connect()
 
   // Comment axios calls
   useEffect(() => {
@@ -49,6 +55,83 @@ const Post = props => {
       })
   }, [])
 
+  // with socket
+  useEffect(() => {
+    socket.on('send-edited-post', () => {
+      showPost(props)
+        .then(res => setPost(res.data.post))
+        .then(() => props.msgAlert({
+          heading: 'Post available',
+          message: 'Successfully retrieved Post',
+          variant: 'success'
+        }))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Getting Post Failed with error: ' + error.message,
+            message: 'Getting a post failed',
+            variant: 'danger'
+          })
+        })
+    })
+  }, [])
+
+  useEffect(() => {
+    socket.on('send-comment-deleted', () => {
+      indexComments(props)
+        .then(res => setComments(res.data.comments))
+        .then(() => props.msgAlert({
+          heading: 'Comments available',
+          message: 'Successfully retrieved comments',
+          variant: 'success'
+        }))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Retrieving Comments Failed with error: ' + error.message,
+            message: 'Retrieving comments failed',
+            variant: 'danger'
+          })
+        })
+    })
+  }, [])
+
+  useEffect(() => {
+    socket.on('send-comment-edit', () => {
+      indexComments(props)
+        .then(res => setComments(res.data.comments))
+        .then(() => props.msgAlert({
+          heading: 'Comments available',
+          message: 'Successfully retrieved comments',
+          variant: 'success'
+        }))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Retrieving Comments Failed with error: ' + error.message,
+            message: 'Retrieving comments failed',
+            variant: 'danger'
+          })
+        })
+    })
+  }, [])
+
+  useEffect(() => {
+    socket.on('send-comment', () => {
+      indexComments(props)
+        .then(res => setComments(res.data.comments))
+        .then(() => props.msgAlert({
+          heading: 'Comments available',
+          message: 'Successfully retrieved comments',
+          variant: 'success'
+        }))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Retrieving Comments Failed with error: ' + error.message,
+            message: 'Retrieving comments failed',
+            variant: 'danger'
+          })
+        })
+    })
+  }, [])
+
   useEffect(() => {
     likeCount(props, props.match.params.id)
       .then(res => setLikeNum(res.data.likeCount))
@@ -59,6 +142,21 @@ const Post = props => {
           variant: 'danger'
         })
       })
+  }, [])
+
+  // with socket for liked
+  useEffect(() => {
+    socket.on('like-change', () => {
+      likeCount(props, props.match.params.id)
+        .then(res => setLikeNum(res.data.likeCount))
+        .catch(error => {
+          props.msgAlert({
+            heading: 'Getting Like Count Failed with error: ' + error.message,
+            message: 'Getting like count failed',
+            variant: 'danger'
+          })
+        })
+    })
   }, [])
 
   useEffect(() => {
@@ -76,6 +174,10 @@ const Post = props => {
   const changeLike = () => {
     if (liked) {
       unlike(props, props.match.params.id)
+        .then(res => {
+          socket.emit('like change', 'unliked')
+          return res
+        })
         .then(() => setLiked(false))
         .then(() => {
           didLike(props, props.match.params.id)
@@ -113,6 +215,10 @@ const Post = props => {
         })
     } else {
       like(props, props.match.params.id)
+        .then(res => {
+          socket.emit('like change', 'liked')
+          return res
+        })
         .then(() => {
           setLiked(true)
           didLike(props, props.match.params.id)
@@ -155,6 +261,10 @@ const Post = props => {
     event.preventDefault()
 
     destroyPost(props)
+      .then(res => {
+        socket.emit('deleted post', 'a post was deleted')
+        return res
+      })
       .then(() => setDeleted(true))
       .catch(error => {
         props.msgAlert({
@@ -181,6 +291,10 @@ const Post = props => {
     deleteComment(props, event.target.value)
       .then(() => {
         indexComments(props)
+          .then(res => {
+            socket.emit('deleted comment', 'a comment was deleted')
+            return res
+          })
           .then(res => setComments(res.data.comments))
           .catch(error => {
             props.msgAlert({

@@ -1,5 +1,8 @@
 import React, { useState, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
+import useSocket from 'use-socket.io-client'
+
+import apiUrl from '../../apiConfig'
 
 import { createPost } from '../../api/post'
 import PostForm from '../shared/PostForm'
@@ -7,6 +10,9 @@ import PostForm from '../shared/PostForm'
 const PostCreate = props => {
   const [post, setPost] = useState({ title: '', text: '' })
   const [createdPostId, setCreatedPostId] = useState(null)
+
+  const [socket] = useSocket(apiUrl)
+  socket.connect()
 
   const handleChange = event => {
     const updatedField = { [event.target.name]: event.target.value }
@@ -18,6 +24,10 @@ const PostCreate = props => {
     event.preventDefault()
 
     createPost(props, post)
+      .then(res => {
+        socket.emit('new post', 'a new post was sent')
+        return res
+      })
       .then(res => setCreatedPostId(res.data.post._id))
       .then(() => props.msgAlert({
         heading: 'Create Successful',

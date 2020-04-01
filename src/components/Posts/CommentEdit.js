@@ -1,5 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
+import useSocket from 'use-socket.io-client'
+
+import apiUrl from '../../apiConfig'
 
 import { showComment, updateComment } from '../../api/comment'
 import CommentForm from '../shared/CommentForm'
@@ -7,6 +10,9 @@ import CommentForm from '../shared/CommentForm'
 const CommentEdit = props => {
   const [comment, setComment] = useState({ title: '', text: '' })
   const [updated, setUpdated] = useState(null)
+
+  const [socket] = useSocket(apiUrl)
+  socket.connect()
 
   useEffect(() => {
     showComment(props)
@@ -35,6 +41,10 @@ const CommentEdit = props => {
     event.preventDefault()
 
     updateComment(props, comment)
+      .then(res => {
+        socket.emit('edited comment', 'a post was edited')
+        return res
+      })
       .then(() => setUpdated(true))
       .then(() => props.msgAlert({
         heading: 'Edit Successful',
