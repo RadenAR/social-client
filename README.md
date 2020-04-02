@@ -15,6 +15,7 @@ Back end repository:
 
 To run locally, run the following in terminal from the project directory:
 ```sh
+npm install
 npm run start
 ```
 
