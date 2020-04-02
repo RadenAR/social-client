@@ -323,10 +323,11 @@ const Post = props => {
   if (comments.length > 0) {
     commentList = comments.map(comment => (
       <li key={comment._id}>
+        <p>{comment.owner.username !== undefined ? '@' + comment.owner.username : '' }</p>
         <h5>{comment.title}</h5>
         <p>{comment.text}</p>
-        {comment.owner === props.user._id ? (<button className='btn btn-danger' onClick={onDeleteComment} value={comment._id}>Delete Comment</button>) : ''}
-        {comment.owner === props.user._id ? (
+        {comment.owner._id === props.user._id ? (<button className='btn btn-danger' onClick={onDeleteComment} value={comment._id}>Delete Comment</button>) : ''}
+        {comment.owner._id === props.user._id ? (
           <Link to={`/posts/${props.match.params.id}/${comment._id}/edit`}>
             <button className='btn btn-primary'>Edit</button>
           </Link>) : ''}
@@ -336,12 +337,13 @@ const Post = props => {
 
   return (
     <div>
+      <p>{post.owner.username !== undefined ? '@' + post.owner.username : '' }</p>
       <h4>{post.title}</h4>
       <p>{post.text}</p>
       <p>posted: {moment(post.createdAt).fromNow()}</p>
       <button className='btn btn-secondary' onClick={changeLike}>{liked ? 'Unlike' : 'Like'} {likeNum === 0 ? '' : likeNum}</button>
-      {post.owner === props.user._id ? (<button className='btn btn-danger' onClick={destroy}>Delete</button>) : ''}
-      {post.owner === props.user._id ? (
+      {post.owner._id === props.user._id ? (<button className='btn btn-danger' onClick={destroy}>Delete</button>) : ''}
+      {post.owner._id === props.user._id ? (
         <Link to={`/posts/${props.match.params.id}/edit`}>
           <button className='btn btn-primary'>Edit</button>
         </Link>) : ''}
@@ -350,8 +352,9 @@ const Post = props => {
       </Link>
       <Link to='/posts'>Back to all posts</Link>
       <div>
+        Comments:
         <ul>
-          {commentList}
+          {commentList !== undefined ? commentList : 'No comments yet'}
         </ul>
       </div>
     </div>

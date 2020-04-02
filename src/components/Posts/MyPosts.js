@@ -99,7 +99,7 @@ const Posts = props => {
     <Fragment>
       <h4>Posts</h4>
       <ul>
-        {postList}
+        {posts.length > 0 ? postList : 'No Posts yet'}
       </ul>
     </Fragment>
   )

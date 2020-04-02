@@ -90,6 +90,7 @@ const Posts = props => {
 
   const postList = posts.map(post => (
     <li key={post._id}>
+      <p>{post.owner.username !== undefined ? '@' + post.owner.username : '' }</p>
       <Link to={`/posts/${post._id}`}>{post.title}</Link>
       <p>{post.text}</p>
     </li>
@@ -99,7 +100,7 @@ const Posts = props => {
     <Fragment>
       <h4>Posts</h4>
       <ul>
-        {postList}
+        {posts.length > 0 ? postList : 'No Posts yet'}
       </ul>
     </Fragment>
   )
