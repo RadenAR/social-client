@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import moment from 'moment'
-import useSocket from 'use-socket.io-client'
+import io from 'socket.io-client'
 
 import apiUrl from '../../apiConfig'
 
@@ -16,7 +16,7 @@ const Post = props => {
   const [liked, setLiked] = useState(false)
   const [comments, setComments] = useState([])
 
-  const [socket] = useSocket(apiUrl)
+  const socket = io(apiUrl)
   socket.connect()
 
   // Comment axios calls
@@ -341,7 +341,7 @@ const Post = props => {
       <h4>{post.title}</h4>
       <p>{post.text}</p>
       <p>posted: {moment(post.createdAt).fromNow()}</p>
-      <button className='btn btn-secondary' onClick={changeLike}>{liked ? 'Unlike' : 'Like'} {likeNum === 0 ? '' : likeNum}</button>
+      <button className='btn btn-secondary' onClick={changeLike}>{liked ? '❤️' : '🤍'} {liked ? (likeNum === 0 ? '' : likeNum) : ''}</button>
       {post.owner._id === props.user._id ? (<button className='btn btn-danger' onClick={destroy}>Delete</button>) : ''}
       {post.owner._id === props.user._id ? (
         <Link to={`/posts/${props.match.params.id}/edit`}>

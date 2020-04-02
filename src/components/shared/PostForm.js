@@ -22,6 +22,7 @@ const PostForm = ({ post, handleSubmit, handleChange, cancelPath }) => (
             onChange={handleChange}
             className='form-control'
           />
+          <br></br>
           <button type='submit' className='btn btn-primary'>Submit</button>
           <Link to={cancelPath}>
             <button className='btn btn-secondary'>Cancel</button>

@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
-import useSocket from 'use-socket.io-client'
+import io from 'socket.io-client'
 
 import apiUrl from '../../apiConfig'
 
@@ -11,7 +11,7 @@ const CommentCreate = props => {
   const [comment, setComment] = useState({ title: '', text: '' })
   const [createdComment, setCreatedComment] = useState(false)
 
-  const [socket] = useSocket(apiUrl)
+  const socket = io(apiUrl)
 
   const handleChange = event => {
     const updatedField = { [event.target.name]: event.target.value }

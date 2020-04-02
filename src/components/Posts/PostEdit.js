@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
-import useSocket from 'use-socket.io-client'
+import io from 'socket.io-client'
 
 import apiUrl from '../../apiConfig'
 
@@ -11,7 +11,7 @@ const PostEdit = props => {
   const [post, setPost] = useState({ title: '', text: '' })
   const [updated, setUpdated] = useState(null)
 
-  const [socket] = useSocket(apiUrl)
+  const socket = io(apiUrl)
   socket.connect()
 
   useEffect(() => {

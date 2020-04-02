@@ -13,6 +13,7 @@ const FriendForm = ({ handleSubmit, handleChange, cancelPath }) => (
             onChange={handleChange}
             className='form-control'
           />
+          <br></br>
           <button type='submit' className='btn btn-primary'>Add Friend</button>
           <Link to={cancelPath}>
             <button className='btn btn-secondary'>Cancel</button>

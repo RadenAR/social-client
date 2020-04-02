@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import useSocket from 'use-socket.io-client'
+import io from 'socket.io-client'
 import { useImmer } from 'use-immer'
 
 import apiUrl from '../../apiConfig'
@@ -9,7 +9,7 @@ import { indexPost } from '../../api/post'
 
 const Posts = props => {
   // socket things
-  const [socket] = useSocket(apiUrl)
+  const socket = io(apiUrl)
   const [posts, setPosts] = useImmer([])
   socket.connect()
 
