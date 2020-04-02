@@ -18,6 +18,7 @@ import Profile from '../Profile/Profile'
 import AddFriend from '../Profile/AddFriend'
 import FriendPosts from '../Posts/FriendPosts'
 import MyPosts from '../Posts/MyPosts'
+import Home from '../Homepage/Home'
 
 class App extends Component {
   constructor () {
@@ -52,6 +53,9 @@ class App extends Component {
           />
         ))}
         <main className="container">
+          <Route exact path='/' render={() => (
+            <Home msgAlert={this.msgAlert} setUser={this.setUser} />
+          )} />
           <Route path='/sign-up' render={() => (
             <SignUp msgAlert={this.msgAlert} setUser={this.setUser} />
           )} />
