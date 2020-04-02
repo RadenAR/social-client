@@ -9,7 +9,6 @@ const Profile = props => {
   useEffect(() => {
     myProfile(props)
       .then(res => {
-        console.log(res.data)
         setPerson(res.data.user)
         if (res.data.user.friends) {
           setFriends(res.data.user.friends)
@@ -41,7 +40,6 @@ const Profile = props => {
       .then(() => {
         myProfile(props)
           .then(res => {
-            console.log(res.data)
             setPerson(res.data.user)
             if (res.data.user.friends) {
               setFriends(res.data.user.friends)
