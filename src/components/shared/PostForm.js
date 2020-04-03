@@ -13,6 +13,7 @@ const PostForm = ({ post, handleSubmit, handleChange, cancelPath }) => (
             name='title'
             onChange={handleChange}
             className='form-control'
+            required
           />
           <label>Text</label>
           <input
@@ -21,6 +22,7 @@ const PostForm = ({ post, handleSubmit, handleChange, cancelPath }) => (
             name='text'
             onChange={handleChange}
             className='form-control'
+            required
           />
           <br></br>
           <button type='submit' className='btn btn-primary'>Submit</button>
