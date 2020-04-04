@@ -50,7 +50,7 @@ const Posts = props => {
           })
         })
     })
-  })
+  }, [])
 
   useEffect(() => {
     socket.on('send-edited-post', () => {
@@ -69,7 +69,7 @@ const Posts = props => {
           })
         })
     })
-  })
+  }, [])
 
   useEffect(() => {
     indexMyPost(props)
