@@ -19,14 +19,14 @@ const AddFriend = props => {
     makeFriend(props, friend)
       .then(res => setAddedFriend(true))
       .then(() => props.msgAlert({
-        heading: 'Create Successful',
-        message: 'Successfully created a post',
+        heading: 'Adding Successful',
+        message: 'Adding a friend was successful',
         variant: 'success'
       }))
       .catch(error => {
         props.msgAlert({
-          heading: 'Creating post Failed with error: ' + error.message,
-          message: 'Creating post failed',
+          heading: 'Adding Friend Failed with error: ' + error.message,
+          message: 'Please make sure the person you are trying to add is a valid user',
           variant: 'danger'
         })
       })
